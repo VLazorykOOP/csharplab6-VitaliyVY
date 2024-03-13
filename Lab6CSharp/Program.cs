@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 
 // Завдання 1
 interface IDetail
@@ -194,37 +193,43 @@ class Program
     static void Main(string[] args)
     {
         // Завдання 1
-        Detail detail = new Detail();
-        Mechanism mechanism = new Mechanism();
-        Product product = new Product();
-        Node node = new Node();
+        ArrayList objects = new ArrayList();
+        objects.Add(new Detail());
+        objects.Add(new Mechanism());
+        objects.Add(new Product());
+        objects.Add(new Node());
 
-        detail.ShowDetail();
-        mechanism.ShowMechanism();
-        product.ShowProduct();
-        node.ShowNode();
+        foreach (var obj in objects)
+        {
+            if (obj is IDetail) ((IDetail)obj).ShowDetail();
+            if (obj is IMechanism) ((IMechanism)obj).ShowMechanism();
+            if (obj is IProduct) ((IProduct)obj).ShowProduct();
+            if (obj is INode) ((INode)obj).ShowNode();
+        }
 
         // Завдання 2
-        ITrans[] vehicles = new ITrans[] {
-            new Car("Toyota", "ABC123", 120, 500),
-            new Motorcycle("Honda", "DEF456", 150, 200, true),
-            new Truck("Volvo", "GHI789", 80, 1000, false)
-        };
+        ArrayList vehicles = new ArrayList();
+        vehicles.Add(new Car("Toyota", "ABC123", 120, 500));
+        vehicles.Add(new Motorcycle("Honda", "DEF456", 150, 200, true));
+        vehicles.Add(new Truck("Volvo", "GHI789", 80, 1000, false));
 
         foreach (var vehicle in vehicles)
         {
-            vehicle.ShowInfo();
+            if (vehicle is ITrans) ((ITrans)vehicle).ShowInfo();
         }
 
         // Завдання 3
-        IShape[] shapes = {
-            new Rectangle(5, 6),
-            new Circle(3)
-        };
+        ArrayList shapes = new ArrayList();
+        shapes.Add(new Rectangle(5, 6));
+        shapes.Add(new Circle(3));
 
         foreach (var shape in shapes)
         {
-            Console.WriteLine($"Area of shape: {shape.Area()}");
+            if (shape is IShape)
+            {
+                var area = ((IShape)shape).Area();
+                Console.WriteLine($"Area of shape: {area}");
+            }
         }
     }
 }
