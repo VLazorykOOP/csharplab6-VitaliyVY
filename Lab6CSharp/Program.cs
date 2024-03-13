@@ -1,4 +1,59 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+// Завдання 1
+interface IDetail
+{
+    void ShowDetail();
+}
+
+interface IMechanism
+{
+    void ShowMechanism();
+}
+
+interface IProduct
+{
+    void ShowProduct();
+}
+
+interface INode
+{
+    void ShowNode();
+}
+
+class Detail : IDetail
+{
+    public void ShowDetail()
+    {
+        Console.WriteLine("Detail");
+    }
+}
+
+class Mechanism : IMechanism
+{
+    public void ShowMechanism()
+    {
+        Console.WriteLine("Mechanism");
+    }
+}
+
+class Product : IProduct
+{
+    public void ShowProduct()
+    {
+        Console.WriteLine("Product");
+    }
+}
+
+class Node : INode
+{
+    public void ShowNode()
+    {
+        Console.WriteLine("Node");
+    }
+}
 
 // Завдання 2
 interface ITrans
@@ -7,20 +62,33 @@ interface ITrans
     int GetLoadCapacity();
 }
 
-class Car : ITrans
+enum VehicleType
 {
-    private string brand;
-    private string number;
-    private int speed;
-    private int loadCapacity;
+    Car,
+    Motorcycle,
+    Truck
+}
 
-    public Car(string brand, string number, int speed, int loadCapacity)
+class VehicleBase
+{
+    protected string brand;
+    protected string number;
+    protected int speed;
+    protected int loadCapacity;
+
+    public VehicleBase(string brand, string number, int speed, int loadCapacity)
     {
         this.brand = brand;
         this.number = number;
         this.speed = speed;
         this.loadCapacity = loadCapacity;
     }
+}
+
+class Car : VehicleBase, ITrans
+{
+    public Car(string brand, string number, int speed, int loadCapacity)
+        : base(brand, number, speed, loadCapacity) { }
 
     public void ShowInfo()
     {
@@ -33,21 +101,15 @@ class Car : ITrans
     }
 }
 
-class Motorcycle : ITrans
+class Motorcycle : VehicleBase, ITrans
 {
-    private string brand;
-    private string number;
-    private int speed;
-    private int loadCapacity;
-    private bool hasSidecar;
+    private bool sidecar;
 
-    public Motorcycle(string brand, string number, int speed, int loadCapacity, bool hasSidecar)
+    public Motorcycle(string brand, string number, int speed, int loadCapacity, bool sidecar)
+        : base(brand, number, speed, loadCapacity)
     {
-        this.brand = brand;
-        this.number = number;
-        this.speed = speed;
-        this.loadCapacity = hasSidecar ? loadCapacity : 0;
-        this.hasSidecar = hasSidecar;
+        this.sidecar = sidecar;
+        if (!sidecar) this.loadCapacity = 0;
     }
 
     public void ShowInfo()
@@ -61,21 +123,15 @@ class Motorcycle : ITrans
     }
 }
 
-class Truck : ITrans
+class Truck : VehicleBase, ITrans
 {
-    private string brand;
-    private string number;
-    private int speed;
-    private int loadCapacity;
-    private bool hasTrailer;
+    private bool trailer;
 
-    public Truck(string brand, string number, int speed, int loadCapacity, bool hasTrailer)
+    public Truck(string brand, string number, int speed, int loadCapacity, bool trailer)
+        : base(brand, number, speed, loadCapacity)
     {
-        this.brand = brand;
-        this.number = number;
-        this.speed = speed;
-        this.loadCapacity = hasTrailer ? loadCapacity * 2 : loadCapacity;
-        this.hasTrailer = hasTrailer;
+        this.trailer = trailer;
+        if (trailer) this.loadCapacity *= 2;
     }
 
     public void ShowInfo()
@@ -89,85 +145,65 @@ class Truck : ITrans
     }
 }
 
-// Завдання 1
-interface IUserInterface
+// Завдання 3
+enum ShapeType
 {
-    void Display();
+    Rectangle,
+    Circle
 }
 
-interface IDotNetInterface
+interface IShape
 {
-    void Method();
+    double Area();
 }
 
-class Detail : IUserInterface, IDotNetInterface
+class Rectangle : IShape
 {
-    public void Display()
+    private double length;
+    private double width;
+
+    public Rectangle(double length, double width)
     {
-        Console.WriteLine("Displaying Detail");
+        this.length = length;
+        this.width = width;
     }
 
-    public void Method()
+    public double Area()
     {
-        Console.WriteLine("Executing Method");
-    }
-}
-
-class Mechanism : IUserInterface, IDotNetInterface
-{
-    public void Display()
-    {
-        Console.WriteLine("Displaying Mechanism");
-    }
-
-    public void Method()
-    {
-        Console.WriteLine("Executing Method");
+        return length * width;
     }
 }
 
-class Product : IUserInterface, IDotNetInterface
+class Circle : IShape
 {
-    public void Display()
+    private double radius;
+
+    public Circle(double radius)
     {
-        Console.WriteLine("Displaying Product");
+        this.radius = radius;
     }
 
-    public void Method()
+    public double Area()
     {
-        Console.WriteLine("Executing Method");
+        return Math.PI * radius * radius;
     }
-}
-
-class Node : IUserInterface, IDotNetInterface
-{
-    public void Display()
-    {
-        Console.WriteLine("Displaying Node");
-    }
-
-    public void Method()
-    {
-        Console.WriteLine("Executing Method");
-    }
-}
-
-// Завдання 3 (додавання стандартних інтерфейсів .NET перерахування)
-enum Weekdays
-{
-    Monday,
-    Tuesday,
-    Wednesday,
-    Thursday,
-    Friday,
-    Saturday,
-    Sunday
 }
 
 class Program
 {
     static void Main(string[] args)
     {
+        // Завдання 1
+        Detail detail = new Detail();
+        Mechanism mechanism = new Mechanism();
+        Product product = new Product();
+        Node node = new Node();
+
+        detail.ShowDetail();
+        mechanism.ShowMechanism();
+        product.ShowProduct();
+        node.ShowNode();
+
         // Завдання 2
         ITrans[] vehicles = new ITrans[] {
             new Car("Toyota", "ABC123", 120, 500),
@@ -180,23 +216,15 @@ class Program
             vehicle.ShowInfo();
         }
 
-        // Завдання 1
-        IUserInterface[] interfaces = new IUserInterface[] {
-            new Detail(),
-            new Mechanism(),
-            new Product(),
-            new Node()
+        // Завдання 3
+        IShape[] shapes = {
+            new Rectangle(5, 6),
+            new Circle(3)
         };
 
-        foreach (var ui in interfaces)
+        foreach (var shape in shapes)
         {
-            ui.Display();
-        }
-
-        // Завдання 3
-        foreach (Weekdays day in Enum.GetValues(typeof(Weekdays)))
-        {
-            Console.WriteLine(day);
+            Console.WriteLine($"Area of shape: {shape.Area()}");
         }
     }
 }
